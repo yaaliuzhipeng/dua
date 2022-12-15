@@ -3,7 +3,8 @@ import '../../appstructure/broadcast.dart';
 const String bottomNavigationEventName = 'BOT_NAVIGATION_EVENT';
 mixin BottomNavigationMixin {
   void Function([bool? all])? off;
-  void up({
+
+  void addBottomNavigationListener({
     void Function(int page)? onChangeCurrentPage,
   }) {
     off = Broadcast.shared.addListener(bottomNavigationEventName, (data) {
@@ -14,7 +15,7 @@ mixin BottomNavigationMixin {
     });
   }
 
-  void down() {
+  void disposeBottomNavigationListener() {
     if (off != null) off!();
   }
 }

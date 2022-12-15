@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-import '../empty.dart';
-import '../../../extensions/decorations.dart';
+import '../widgets/empty.dart';
+import '../../extensions/decorations.dart';
 
 class Toast extends StatelessWidget {
   const Toast({

@@ -1,7 +1,6 @@
 import '../../appstructure/broadcast.dart';
 import './bottom_navigation_mixin.dart';
 import 'package:flutter/material.dart';
-import '../../ui/navigation/tab_navigation_bar/plain_bottom_tab_bar.dart';
 
 typedef TabChangeCallback = void Function(int index);
 
@@ -10,12 +9,12 @@ class PlainBottomNavigation extends StatefulWidget {
     super.key,
     required this.pages,
     required this.renderTabBar,
-    this.tabBarHeight,
+    required this.tabBarHeight,
   });
 
   List<Widget> pages;
   Widget Function(TabChangeCallback onTabChanged, int index) renderTabBar;
-  double? tabBarHeight;
+  double tabBarHeight;
 
   static void setCurrentPage(int page) {
     Broadcast.shared.emit(bottomNavigationEventName, {'type': 'setCurrentPage', 'value': page});
@@ -35,7 +34,7 @@ class PlainBottomNavigationState extends State<PlainBottomNavigation> with Botto
 
   @override
   void initState() {
-    up(onChangeCurrentPage: (page) {
+    addBottomNavigationListener(onChangeCurrentPage: (page) {
       index = page;
       setState(() {});
     });
@@ -44,13 +43,13 @@ class PlainBottomNavigationState extends State<PlainBottomNavigation> with Botto
 
   @override
   void dispose() {
-    down();
     super.dispose();
+    disposeBottomNavigationListener();
   }
 
   @override
   Widget build(BuildContext context) {
-    double tabHeight = widget.tabBarHeight ?? usePlainBottomTabBarHeight(context);
+    double tabHeight = widget.tabBarHeight;
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F7),
       body: Stack(

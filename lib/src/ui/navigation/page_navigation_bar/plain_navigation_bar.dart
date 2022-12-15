@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../appstructure/context_extension.dart';
+import '../../../extensions/contexts.dart';
 
 class PlainNavigationBar extends StatelessWidget {
   PlainNavigationBar({
