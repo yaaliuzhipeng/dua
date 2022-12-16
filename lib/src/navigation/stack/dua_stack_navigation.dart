@@ -82,7 +82,9 @@ class DuaStackNavigationBuilder {
   })  : _onUnknownRoute = onUnknownRoute,
         _observers = observers,
         _initialPage = initialPage,
-        _pages = pages;
+        _pages = pages {
+    _duaRouteInformationParser = DuaRouteInformationParser();
+  }
 
   DuaStackNavigationBuilder setOnUnknownRoute(Route<dynamic>? Function(RouteSettings)? onUnknownRoute) {
     _onUnknownRoute = onUnknownRoute;
