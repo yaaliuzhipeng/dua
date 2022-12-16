@@ -12,3 +12,7 @@ export './src/ui/widgets/list_item/simple_image_list_item.dart';
 
 export './src/ui/widgets/buttons/opacity_touchable.dart';
 export './src/ui/widgets/buttons/simple_button.dart';
+
+export './src/ui/navigation/page_navigation_bar/plain_navigation_bar.dart';
+export './src/ui/navigation/page_transition/simple.dart';
+export './src/ui/navigation/tab_navigation_bar/plain_bottom_tab_bar.dart';
