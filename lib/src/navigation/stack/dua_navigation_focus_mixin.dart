@@ -11,23 +11,23 @@ mixin DuaNavigationFocusMixin {
     unsubscribe = null;
   }
 
-  void toggleNavigationFocus(bool on) {
-    if (on) {
-      _unsubscribe();
-      unsubscribe = Broadcast.shared.addListener(DUA_NAVIGATION_FOCUS_EVENT, (routename) {
-        if (routename == name()) {
-          onFocusChanged(true);
-          __focused = true;
-        } else {
-          if (__focused) {
-            onFocusChanged(false);
-            __focused = false;
-          }
+  void loadNavigationFocus() {
+    _unsubscribe();
+    unsubscribe = Broadcast.shared.addListener(DUA_NAVIGATION_FOCUS_EVENT, (routename) {
+      if (routename == name()) {
+        onFocusChanged(true);
+        __focused = true;
+      } else {
+        if (__focused) {
+          onFocusChanged(false);
+          __focused = false;
         }
-      });
-    } else {
-      _unsubscribe();
-    }
+      }
+    });
+  }
+
+  void disposeNavigationFocus() {
+    _unsubscribe();
   }
 
   ///required
