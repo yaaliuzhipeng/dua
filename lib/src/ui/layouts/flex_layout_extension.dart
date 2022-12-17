@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 extension HorizontalLayoutExtension on List<Widget> {
   /// start
-  hs({
+  Row hs({
     MainAxisSize mainAxisSize = MainAxisSize.max,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   }) {
@@ -15,7 +15,7 @@ extension HorizontalLayoutExtension on List<Widget> {
   }
 
   /// center
-  hc({
+  Row hc({
     MainAxisSize mainAxisSize = MainAxisSize.max,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   }) {
@@ -28,7 +28,7 @@ extension HorizontalLayoutExtension on List<Widget> {
   }
 
   /// end
-  he({
+  Row he({
     MainAxisSize mainAxisSize = MainAxisSize.max,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   }) {
@@ -41,7 +41,7 @@ extension HorizontalLayoutExtension on List<Widget> {
   }
 
   /// space-between
-  hsb({
+  Row hsb({
     MainAxisSize mainAxisSize = MainAxisSize.max,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   }) {
@@ -54,7 +54,7 @@ extension HorizontalLayoutExtension on List<Widget> {
   }
 
   /// space-around
-  hsa({
+  Row hsa({
     MainAxisSize mainAxisSize = MainAxisSize.max,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   }) {
@@ -67,7 +67,7 @@ extension HorizontalLayoutExtension on List<Widget> {
   }
 
   /// space-evenly
-  hse({
+  Row hse({
     MainAxisSize mainAxisSize = MainAxisSize.max,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   }) {
@@ -81,7 +81,7 @@ extension HorizontalLayoutExtension on List<Widget> {
 }
 
 extension VerticalLayoutExtension on List<Widget> {
-  vs({
+  Column vs({
     MainAxisSize mainAxisSize = MainAxisSize.max,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   }) {
@@ -93,7 +93,7 @@ extension VerticalLayoutExtension on List<Widget> {
     );
   }
 
-  vc({
+  Column vc({
     MainAxisSize mainAxisSize = MainAxisSize.max,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   }) {
@@ -105,7 +105,7 @@ extension VerticalLayoutExtension on List<Widget> {
     );
   }
 
-  ve({
+  Column ve({
     MainAxisSize mainAxisSize = MainAxisSize.max,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   }) {
@@ -117,7 +117,7 @@ extension VerticalLayoutExtension on List<Widget> {
     );
   }
 
-  vsb({
+  Column vsb({
     MainAxisSize mainAxisSize = MainAxisSize.max,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   }) {
@@ -129,7 +129,7 @@ extension VerticalLayoutExtension on List<Widget> {
     );
   }
 
-  vsa({
+  Column vsa({
     MainAxisSize mainAxisSize = MainAxisSize.max,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   }) {
@@ -141,7 +141,7 @@ extension VerticalLayoutExtension on List<Widget> {
     );
   }
 
-  vse({
+  Column vse({
     MainAxisSize mainAxisSize = MainAxisSize.max,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   }) {
