@@ -1,3 +1,5 @@
+import 'dart:collection';
+import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/widgets.dart';
 
@@ -100,6 +102,7 @@ class DuaStateManager {
   /// @param notifier => 当前监听者刷新通知器
   void markObserverWidget(int code, List<dynamic>? deps, _ObserverUpdateNotifier notifier) {
     _notifiers[code] = notifier;
+    // _log("标记监听者组件: $code   deps: $deps");
     if (deps == null) {
       if (!obsAllDepObserver.contains(code)) _obsAllDepObserver.add(code);
     } else if (deps.isEmpty) {
@@ -168,11 +171,13 @@ class DuaStateManager {
     // 1. 通知所有未设置依赖的监听者
     for (int obr in obsAllDepObserver) {
       _notifiers[obr]?.up();
+      _log("通知未设置依赖的监听者, ${_notifiers[obr]}");
     }
     // 2. 通知当前变更值下关联的监听者
     for (int obev in observableValues) {
       //遍历当前 观察值 下面关联的监听者、通知刷新
       for (int obr in (_observableValueRelObservers[obev] ?? [])) {
+        // _log("通知观察值下的监听者: ${_notifiers[obr]}");
         _notifiers[obr]?.up();
       }
     }
@@ -246,7 +251,7 @@ mixin Observable {
 }
 
 class Observer<T> extends StatefulWidget {
-  Observer(this.builder, this.deps) {}
+  Observer(this.builder, [this.deps]);
 
   Widget Function() builder;
   List<dynamic>? deps;
@@ -258,17 +263,31 @@ class Observer<T> extends StatefulWidget {
 class _ObserverState extends State<Observer> {
   final _ObserverUpdateNotifier notifier = _ObserverUpdateNotifier();
   late List<dynamic> deps = widget.deps ?? [];
+  late HashMap<int, Object> dmap;
   bool isMounted = true;
 
   @override
   void initState() {
+    dmap = HashMap();
+    deps.forEach((dep) {
+        dmap[dep.hashCode] = dep.value;
+    });
     notifier.addListener(() {
       if (isMounted == false) return;
-      //TODO: 对比previous值、判断是否需要rebuild
+      bool shouldUpdate = widget.deps == null ? true : false;
+      for (var v in deps) {
+        if (dmap[v.hashCode] != v.value) {
+          shouldUpdate = true;
+          dmap[v.hashCode] = v.value;
+        } else {
+          //TODO: object type
+        }
+      }
       //通知组件rebuild
-      setState(() {});
+      if (shouldUpdate) setState(() {});
     });
-    DuaStateManager.shared.markObserverWidget(hashCode, deps, notifier);
+    // 这里必须使用widget.deps 、deps是否为null也影响组件更新决策
+    DuaStateManager.shared.markObserverWidget(hashCode, widget.deps, notifier);
     super.initState();
   }
 
@@ -292,7 +311,11 @@ class _ObserverUpdateNotifier extends ChangeNotifier {
   }
 }
 
-class OvValue {
+class O extends Observer {
+  O(super.builder, [super.deps]);
+}
+
+class OvValue<T> {
   OvValue(this._value, {List<dynamic>? observable}) {
     if (observable != null) {
       _hashcode = observable[0];
@@ -308,12 +331,19 @@ class OvValue {
   int? _hashcode;
   void Function(int code)? _markChangedValue;
 
-  dynamic get value => _value;
+  T get value => _value;
 
-  set value(dynamic v) {
+  set value(T v) {
     _markChangedValue!(hashCode);
     _value = v;
   }
+}
+
+class OvObject extends OvValue {
+  OvObject(Object value, [List<dynamic>? observable]) : super(value, observable: observable);
+
+  @override
+  Object get value => _value as Object;
 }
 
 class OvInt extends OvValue {
@@ -386,6 +416,11 @@ class OvString extends OvValue {
 
 /// extensions
 ///
+
+extension OvObjectValueExtension on Object {
+  OvObject ov(List<dynamic>? observable) => OvObject(this, observable);
+}
+
 extension OvIntValueExtension on int {
   OvInt ov(List<dynamic>? observable) => OvInt(this, observable);
 }
