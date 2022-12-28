@@ -7,6 +7,14 @@ import 'package:flutter/widgets.dart';
 /// 监听者widget无法知晓使用了哪些观察者、监听者可以在依赖数组中声明使用了哪些观察者值
 /// 观察者类每次批更新都知道哪些观察者值执行了set方法
 ///
+
+class PendingUpdate {
+  final int observable;
+  final List<int> observableValues;
+
+  PendingUpdate(this.observable, this.observableValues);
+}
+
 class DuaStateManager {
   static DuaStateManager? _instance;
 
@@ -26,9 +34,15 @@ class DuaStateManager {
   final List<int> _obsObservables = [];
   final List<int> _frozenObservables = [];
 
+  // 注册的观察者类
   List<int> get obsObservables => List.unmodifiable(_obsObservables);
 
+  // 冻结的观察者类
   List<int> get frozenObservables => List.unmodifiable(_frozenObservables);
+
+  /// 暂存的观察者值更新响应批次
+  /// int observable, List<int> observableValues
+  List<PendingUpdate> pendingUpdateBatches = [];
 
   /// 监听者类标记数组
   /// 不响应、响应全部、仅响应部分
@@ -63,6 +77,7 @@ class DuaStateManager {
     if (ind != -1) {
       _obsObservables.removeAt(ind);
     }
+    pendingUpdateBatches.removeWhere((element) => element.observable == cls.hashCode);
   }
 
   /// 标记一个 Observalbe Class实例冻结状态、通常为跳转到另一个页面时，前一个页面用到的实例观察者临时冻结不用进行通知
@@ -162,6 +177,33 @@ class DuaStateManager {
       }
     }
   }
+
+  void requirePendingUpdate(int observable) {
+    var values = _allPendingUpdate(observable);
+    requireUpdate(observable, values);
+  }
+
+  List<int> _allPendingUpdate(int observable) {
+    List<int> values = [];
+    List<PendingUpdate> updates = List.from(pendingUpdateBatches);
+    while (true) {
+      PendingUpdate? update;
+      int index = -1;
+      for (var i = 0; i < updates.length; i++) {
+        if (updates[i].observable == observable) {
+          update = updates[i];
+          index = i;
+          break;
+        }
+      }
+      if (update == null) break;
+      values.addAll(update.observableValues);
+      updates.removeAt(index);
+    }
+    //更新合并了observable后的 pendingUpdateBatches
+    pendingUpdateBatches = updates;
+    return values.toSet().toList();
+  }
 }
 
 // 用于拓展需要成为观察者的类
@@ -189,6 +231,7 @@ mixin Observable {
 
   void resume() {
     DuaStateManager.shared.toggleObservableFrozen(hashCode, false);
+    DuaStateManager.shared.requirePendingUpdate(hashCode);
   }
 
   void dispose() {
