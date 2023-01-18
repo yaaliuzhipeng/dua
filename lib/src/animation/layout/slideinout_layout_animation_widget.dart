@@ -71,6 +71,17 @@ class _CurveSlideInOutLayoutAnimationWidget extends State<SlideInOutLayoutAnimat
         controller.reverse();
       }
     };
+    runAnimation();
+  }
+
+  void runAnimation() {
+    if (widget.visible && !visible) {
+      visible = true;
+      controller.forward();
+      setState(() {});
+    } else {
+      controller.reverse();
+    }
   }
 
   @override
@@ -82,13 +93,7 @@ class _CurveSlideInOutLayoutAnimationWidget extends State<SlideInOutLayoutAnimat
 
   @override
   void didUpdateWidget(covariant SlideInOutLayoutAnimationWidget oldWidget) {
-    if (widget.visible && !visible) {
-      visible = true;
-      controller.forward();
-      setState(() {});
-    } else {
-      controller.reverse();
-    }
+    runAnimation();
     super.didUpdateWidget(oldWidget);
   }
 

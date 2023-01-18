@@ -65,6 +65,17 @@ class _FadeInOutLayoutAnimationWidget extends State<FadeInOutLayoutAnimationWidg
         controller.reverse();
       }
     };
+    runAnimation();
+  }
+
+  void runAnimation() {
+    if (widget.visible && !visible) {
+      visible = true;
+      controller.forward();
+      setState(() {});
+    } else {
+      controller.reverse();
+    }
   }
 
   @override
@@ -76,13 +87,7 @@ class _FadeInOutLayoutAnimationWidget extends State<FadeInOutLayoutAnimationWidg
 
   @override
   void didUpdateWidget(covariant FadeInOutLayoutAnimationWidget oldWidget) {
-    if (widget.visible && !visible) {
-      visible = true;
-      controller.forward();
-      setState(() {});
-    } else {
-      controller.reverse();
-    }
+    runAnimation();
     super.didUpdateWidget(oldWidget);
   }
 
