@@ -22,12 +22,18 @@ class Adaptivity {
   dp(n) {
     return n * (_actual.width / _base.width);
   }
+
+  hp(n) {
+    return n * (_actual.height / _base.height);
+  }
 }
 
 extension IntegerScreenAdaptive on int {
   double dp() => Adaptivity.shared.dp(this);
+  double hp() => Adaptivity.shared.hp(this);
 }
 
 extension DoubleScreenAdaptive on double {
   double dp() => Adaptivity.shared.dp(this);
+  double hp() => Adaptivity.shared.hp(this);
 }
