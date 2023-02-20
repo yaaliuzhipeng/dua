@@ -40,10 +40,6 @@ class Broadcast {
 
   static Broadcast get shared => _instance ??= Broadcast();
 
-  Broadcast() {
-    debugPrint("===> Broadcast Constructing <===");
-  }
-
   bool _debugLogEnabled = false;
   final Map<String, StreamController> _streamControllers = {};
   final Map<String, List<ListenerObject>> _streamListeners = {};

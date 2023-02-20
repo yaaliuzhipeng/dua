@@ -54,7 +54,6 @@ class DuaStackNavigationDelegate extends RouterDelegate<String> with PopNavigato
     required this.pages,
   }) : assert(pages.isNotEmpty, "navigation pages cannot be empty!") {
     constructPageIndex();
-    debugPrint("=============== DuaStackNavigationDelegate contructing ===============");
     WidgetsBinding.instance.addObserver(this);
   }
 
