@@ -27,14 +27,14 @@ extension DuaStackNavigationBuildContextExtension on BuildContext {
 }
 
 extension DuaStackNavigationStringExtension on String {
-  void go() {
+  void go({Object? params, bool? forResult}) {
     var delegate = Dio.find<DuaStackNavigationDelegate>();
-    delegate?.navigate(this);
+    delegate?.navigate(this, params: params, forResult: forResult);
   }
 
-  void goForResult() {
+  void goForResult({Object? params}) {
     var delegate = Dio.find<DuaStackNavigationDelegate>();
-    delegate?.navigate(this, forResult: true);
+    delegate?.navigate(this, params: params, forResult: true);
   }
 
   void goBack({Object? result}) {

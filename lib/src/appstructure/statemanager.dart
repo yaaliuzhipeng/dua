@@ -325,11 +325,11 @@ class OvValue<T> {
   }
 }
 
-class OvObject extends OvValue {
+class OvObject<T> extends OvValue {
   OvObject(Object value, [List<dynamic>? observable]) : super(value, observable: observable);
 
   @override
-  Object get value => _value as Object;
+  T? get value => (_value is T) ? (_value as T) : null;
 
   void setValue(Function() callback) {
     callback();
@@ -409,7 +409,7 @@ class OvString extends OvValue {
 ///
 
 extension OvObjectValueExtension on Object {
-  OvObject ov(List<dynamic>? observable) => OvObject(this, observable);
+  OvObject<T> ov<T>(List<dynamic>? observable) => OvObject<T>(this, observable);
 }
 
 extension OvIntValueExtension on int {
