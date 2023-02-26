@@ -214,15 +214,15 @@ class DuaStateManager {
 
 // 用于拓展需要成为观察者的类
 mixin Observable {
-  final List<int> batchChangedValues = [];
-  final List<int> observalbeValues = [];
+  final List<int> _batchChangedValues = [];
+  final List<int> _observalbeValues = [];
 
   void _markChangedValue(int code) {
-    if (!batchChangedValues.contains(code)) batchChangedValues.add(code);
+    if (!_batchChangedValues.contains(code)) _batchChangedValues.add(code);
   }
 
   void _registerObservableValue(int code) {
-    if (!observalbeValues.contains(code)) observalbeValues.add(code);
+    if (!_observalbeValues.contains(code)) _observalbeValues.add(code);
   }
 
   List<dynamic> get i => [hashCode, _markChangedValue, _registerObservableValue];
@@ -241,13 +241,13 @@ mixin Observable {
   }
 
   void dispose() {
-    DuaStateManager.shared.unmarkObservableClass(this, observalbeValues);
+    DuaStateManager.shared.unmarkObservableClass(this, _observalbeValues);
   }
 
   void update() {
     //clear batchChangedValues
-    DuaStateManager.shared.requireUpdate(hashCode, batchChangedValues);
-    batchChangedValues.clear();
+    DuaStateManager.shared.requireUpdate(hashCode, _batchChangedValues);
+    _batchChangedValues.clear();
   }
 }
 
@@ -334,6 +334,14 @@ class OvObject<T> extends OvValue {
   void setValue(Function() callback) {
     callback();
     _markChangedValue!(hashCode);
+  }
+
+  @override
+  set value(dynamic value) {
+    if (value != _value) {
+      _markChangedValue!(hashCode);
+    }
+    _value = value;
   }
 }
 
