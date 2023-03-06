@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'dua_navigation_focus_mixin.dart';
@@ -89,15 +90,14 @@ class DuaStackNavigationDelegate extends RouterDelegate<String> with PopNavigato
     return routerDelegate as DuaStackNavigationDelegate;
   }
 
-  /// 前一个路由跳转时是否请求了结果
-  /// navigate[forResult]值为true将会设置 该值为对应的路由name
-  /// 在goBack时将判断返回后栈顶是否为navigatedForResultRoute、匹配上则更新state中路由对应的result属性
-  String? navigatedForResultRoute;
   final DuaNavigationState state = DuaNavigationState(
     routes: [],
     index: 0,
     result: null,
   );
+
+  /// 跳转结果处理流
+  StreamController? navigationResultStreamController;
 
   List get stack => List.unmodifiable(state.routeNames);
 
@@ -167,12 +167,22 @@ class DuaStackNavigationDelegate extends RouterDelegate<String> with PopNavigato
   /// 导航跳转、navigate基本等同于 push
   void navigate(String name, {Object? params, bool? forResult}) {
     var route = DuaNavigationRoute(name: name, params: params);
-    if (forResult ?? false) {
-      navigatedForResultRoute = route.key;
-    }
     state.routes.add(route);
     state.index = max(state.routes.length - 1, 0);
     notifyListeners();
+  }
+
+  /// 同步请求页面返回结果的跳转函数、navigate 的 Future版本
+  Future<void> navigateForResult(String name, Future<void> Function(dynamic result) onResult, {Object? params}) async {
+    navigate(name, params: params, forResult: true);
+    navigationResultStreamController = StreamController();
+    navigationResultStreamController!.stream.listen((event) {
+      //收到通知后结束流,结果在基础方法[goBack]中已经先于通知改监听器更新到state中
+      navigationResultStreamController!.close();
+    });
+    await navigationResultStreamController!.done;
+    await onResult(state.result);
+    navigationResultStreamController = null;
   }
 
   /// 基本等同于 pop、但如果传入对应路由名、则会将找到的最后一个对应路由名的路由之上的路由全部弹出
@@ -187,8 +197,9 @@ class DuaStackNavigationDelegate extends RouterDelegate<String> with PopNavigato
       state.routes.removeRange(index + 1, state.routes.length);
     }
     state.index = max(state.routes.length - 1, 0);
-    if (result != null && state.routes.last.key == navigatedForResultRoute) {
+    if (result != null) {
       state.result = result;
+      if (navigationResultStreamController != null) navigationResultStreamController!.add(1);
     }
     notifyListeners();
   }
