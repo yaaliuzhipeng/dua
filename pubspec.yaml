@@ -12,6 +12,7 @@ dependencies:
     cupertino_icons:
     path:
     uuid:
+    cached_network_image:
 
 dev_dependencies:
     lints: ^2.0.0
